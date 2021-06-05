@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using BlogApp.DataAccess;
 using BlogApp.Domain;
@@ -11,8 +13,11 @@ namespace BlogApp.TestApp
     {
         static async Task Main(string[] args)
         {
-            await AddBlogs();
-            
+            //await AddBlogs();
+            // await GetAllBlogs();
+            // await GetAllBlogsWithAllPosts();
+            await FindGoBlog();
+
             Console.WriteLine("테스트 종료");
         }
 
@@ -56,6 +61,65 @@ namespace BlogApp.TestApp
                 }
             });
             await dbContext.SaveChangesAsync();
+        }
+
+        private static async Task GetAllBlogs()
+        {
+            Console.WriteLine("GetAllBlogs() 시작");
+            
+            await using var dbContext = new BlogContext();
+            var blogs = await dbContext.Blogs.ToListAsync();
+
+            Console.WriteLine("가져온 Blog 목록 : ");
+            foreach (var blog in blogs)
+            {
+                Console.Write("Blog : ");
+                Console.WriteLine(blog.ToString());
+            }
+            
+            Console.WriteLine("GetAllBlogs() 종료");
+        }
+        
+        private static async Task GetAllBlogsWithAllPosts()
+        {
+            Console.WriteLine("GetAllBlogsWithAllPosts() 시작");
+            
+            await using var dbContext = new BlogContext();
+            var blogs = await dbContext.Blogs.Include(blog => blog.Posts).ToListAsync();
+
+            Console.WriteLine("가져온 Blog 목록(Post포함) : ");
+            foreach (var blog in blogs)
+            {
+                Console.Write("Blog : ");
+                Console.WriteLine(blog.ToString());
+                foreach (var post in blog.Posts)
+                {
+                    Console.Write("-- Post : ");
+                    Console.WriteLine(post);
+                }
+            }
+            
+            Console.WriteLine("GetAllBlogsWithAllPosts() 종료");
+        }
+        
+        private static async Task FindGoBlog()
+        {
+            Console.WriteLine("FindGoBlog() 시작");
+            
+            await using var dbContext = new BlogContext();
+            var goBlog
+                    = await dbContext.Blogs
+                        // Oracle에서는 아래 처럼하면 안됨 -,.-
+                        // .Where(blog => blog.Name.Contains("Go"))
+                        .Where(blog => EF.Functions.Like(blog.Name, "%Go%"))
+                        .FirstOrDefaultAsync()
+                ;
+            if (goBlog != null)
+            {
+                Console.WriteLine("Go Blog 를 찾음 : {0}", goBlog.ToString());
+            }
+            
+            Console.WriteLine("FindGoBlog() 종료");
         }
     }
 }
