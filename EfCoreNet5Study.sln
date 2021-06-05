@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlogApp.Domain", "BlogApp.Domain\BlogApp.Domain.csproj", "{36BEF47D-2E7C-41AE-AC61-EAA324D1C65D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlogApp.DataAccess", "BlogApp.DataAccess\BlogApp.DataAccess.csproj", "{961E7A3D-39A6-4580-8C78-3E6308C25669}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{36BEF47D-2E7C-41AE-AC61-EAA324D1C65D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36BEF47D-2E7C-41AE-AC61-EAA324D1C65D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36BEF47D-2E7C-41AE-AC61-EAA324D1C65D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{961E7A3D-39A6-4580-8C78-3E6308C25669}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{961E7A3D-39A6-4580-8C78-3E6308C25669}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{961E7A3D-39A6-4580-8C78-3E6308C25669}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{961E7A3D-39A6-4580-8C78-3E6308C25669}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
