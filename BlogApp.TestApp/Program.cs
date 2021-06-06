@@ -17,7 +17,8 @@ namespace BlogApp.TestApp
             // await GetAllBlogs();
             // await GetAllBlogsWithAllPosts();
             // await FindGoBlog();
-            await UpdateGoPost();
+            // await UpdateGoPost();
+            await ChangeVariousEntities();
 
             Console.WriteLine("테스트 종료");
         }
@@ -145,6 +146,53 @@ namespace BlogApp.TestApp
             await dbContext.SaveChangesAsync();
             
             Console.WriteLine("UpdateGoPost() 종료");
+        }
+        
+        private static async Task ChangeVariousEntities()
+        {
+            Console.WriteLine("ChangeVariousEntities() 시작");
+            
+            await using var dbContext = new BlogContext();
+            var blogs = await dbContext.Blogs
+                    .Include(blog => blog.Posts)
+                    .ToListAsync()
+                ;
+            
+            foreach (var blog in blogs)
+            {
+                if (blog.Name.Contains("C#"))
+                {
+                    // C# 블로그에 Post 추가
+                    blog.Posts.Add(new Post
+                    {
+                        Title = "참 쉽조잉",
+                        Content = "하지만 얕보다가는 큰 코 닥침"
+                    });
+                }
+                else if (blog.Name.Contains("Python"))
+                {
+                    // Python 블로그의 제목 변경
+                    blog.Name += " - AI 에서 최고";
+                }
+                else if (blog.Name.Contains("Go"))
+                {
+                    // Go 블로그의 마지막 Post 제거
+                    var lastPost = blog.Posts.LastOrDefault();
+                    if (lastPost != null)
+                    {
+                        // 아래 처럼 한다고 삭제되지는 않는다.
+                        // --> blog 자체는 변경추적중이지만,
+                        //     blog의 Navigation속성인 Post의 항목은 Blog 내에서 추적중이 아니기 때문
+                        //blog.Posts.Remove(lastPost);
+
+                        dbContext.Remove(lastPost);
+                    }
+                }
+            }
+
+            await dbContext.SaveChangesAsync();
+            
+            Console.WriteLine("ChangeVariousEntities() 종료");
         }
     }
 }
