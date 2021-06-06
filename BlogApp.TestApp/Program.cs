@@ -16,7 +16,8 @@ namespace BlogApp.TestApp
             //await AddBlogs();
             // await GetAllBlogs();
             // await GetAllBlogsWithAllPosts();
-            await FindGoBlog();
+            // await FindGoBlog();
+            await UpdateGoPost();
 
             Console.WriteLine("테스트 종료");
         }
@@ -120,6 +121,30 @@ namespace BlogApp.TestApp
             }
             
             Console.WriteLine("FindGoBlog() 종료");
+        }
+
+        private static async Task UpdateGoPost()
+        {
+            Console.WriteLine("UpdateGoPost() 시작");
+            
+            await using var dbContext = new BlogContext();
+            var blogs
+                    = await dbContext.Blogs
+                        .Where(blog => EF.Functions.Like(blog.Name, "%Go%"))
+                        .Include(blog => blog.Posts)
+                        .ToListAsync()
+                ;
+            foreach (var blog in blogs)
+            {
+                foreach (var goPost in blog.Posts)
+                {
+                    goPost.Content += " 생소하다 ";
+                }
+            }
+
+            await dbContext.SaveChangesAsync();
+            
+            Console.WriteLine("UpdateGoPost() 종료");
         }
     }
 }
